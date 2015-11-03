@@ -79,6 +79,31 @@ def Quicksort(nums, compare = Ascending):
 
     return nums
 
+def RandomizedQuicksort(nums, compare = Ascending):
+    stack = [(0, len(nums)-1)]
+
+    while len(stack) > 0:
+        (p, q) = stack.pop()
+
+        if p < q:
+            r = random.randint(p, q)
+            nums[p], nums[r] = nums[r], nums[p]
+            i = p
+            j = i + 1
+
+            while j <= q:
+                if compare(nums[p], nums[j]) > 0:
+                    nums[j], nums[i+1] = nums[i+1], nums[j]
+                    i += 1
+
+                j += 1
+            
+            nums[p], nums[i] = nums[i], nums[p]
+            stack.append((p, i-1))
+            stack.append((i+1, q))
+
+    return nums
+
 
 if len(sys.argv) != 2 or int(sys.argv[1]) < 0:
     print('Usage: SortingAlgorithms.py <test list size>')
@@ -98,6 +123,7 @@ MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
+MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
 
 print('\n[Reverse Sorted]')
 nums = list(range(size, 0, -1))
@@ -106,6 +132,7 @@ MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
+MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
 
 print('\n[Random Order]')
 nums = list(range(size))
@@ -115,3 +142,4 @@ MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
+MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
