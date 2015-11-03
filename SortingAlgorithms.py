@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 # SortingAlgorithms.py
 # Implement several kinds of sorting algorithms
+# Including: Bubble sort, selection sort, insertion sort, quicksort and randomized quicksort
 # Author: Art.Huang
 
 import sys
@@ -114,10 +115,7 @@ size = int(sys.argv[1])
 
 print('\n[Nearly Sorted]')
 nums = list(range(size))
-
-if size > 1:
-    nums[int(size/2)-1], nums[int(size/2)] = nums[int(size/2)], nums[int(size/2)-1]
-
+nums[int(size/2)-1], nums[int(size/2)] = nums[int(size/2)], nums[int(size/2)-1] if size > 1 else None
 print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
