@@ -55,8 +55,29 @@ def InsertionSort(nums, compare = Ascending):
 
     return nums
 
+def _Quicksort(nums, compare, p, q):
+    if p < q:
+        i = p
+        j = i + 1
 
-if len(sys.argv) != 2:
+        while j <= q:
+            if compare(nums[p], nums[j]) > 0:
+                nums[j], nums[i+1] = nums[i+1], nums[j]
+                i += 1
+
+            j += 1
+        
+        nums[p], nums[i] = nums[i], nums[p]
+        _Quicksort(nums, compare, p, i-1)
+        _Quicksort(nums, compare, i+1, q)
+
+    return nums
+
+def Quicksort(nums, compare = Ascending):
+    return _Quicksort(nums, compare, 0, len(nums)-1)
+
+
+if len(sys.argv) != 2 or int(sys.argv[1]) < 0:
     print('Usage: SortingAlgorithms.py <test list size>')
     exit()
 
@@ -73,6 +94,7 @@ print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
+MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 
 print('\n[Reverse Sorted]')
 nums = list(range(size, 0, -1))
@@ -80,6 +102,7 @@ print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
+MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 
 print('\n[Random Order]')
 nums = list(range(size))
@@ -88,3 +111,4 @@ print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
+MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
