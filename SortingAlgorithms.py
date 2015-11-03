@@ -9,7 +9,7 @@ from timeit import default_timer as timer
 
 def MeasureTimeAndPrint(name, nums, func):
     t = timer()
-    s = func(nums)
+    s = func(list(nums))
     print(name + ('%.4f' % (timer() - t)) + ' secs')
     print(s) if size <= visibleSize else None
 
@@ -50,31 +50,34 @@ def InsertionSort(nums, compare = Ascending):
         while j >= 0:
             if compare(nums[j], nums[j+1]) > 0:
                 nums[j], nums[j+1] = nums[j+1], nums[j]
+                j -= 1
             else:
                 break
 
     return nums
 
-def _Quicksort(nums, compare, p, q):
-    if p < q:
-        i = p
-        j = i + 1
+def Quicksort(nums, compare = Ascending):
+    stack = [(0, len(nums)-1)]
 
-        while j <= q:
-            if compare(nums[p], nums[j]) > 0:
-                nums[j], nums[i+1] = nums[i+1], nums[j]
-                i += 1
+    while len(stack) > 0:
+        (p, q) = stack.pop()
 
-            j += 1
-        
-        nums[p], nums[i] = nums[i], nums[p]
-        _Quicksort(nums, compare, p, i-1)
-        _Quicksort(nums, compare, i+1, q)
+        if p < q:
+            i = p
+            j = i + 1
+
+            while j <= q:
+                if compare(nums[p], nums[j]) > 0:
+                    nums[j], nums[i+1] = nums[i+1], nums[j]
+                    i += 1
+
+                j += 1
+            
+            nums[p], nums[i] = nums[i], nums[p]
+            stack.append((p, i-1))
+            stack.append((i+1, q))
 
     return nums
-
-def Quicksort(nums, compare = Ascending):
-    return _Quicksort(nums, compare, 0, len(nums)-1)
 
 
 if len(sys.argv) != 2 or int(sys.argv[1]) < 0:
