@@ -110,10 +110,10 @@ if len(sys.argv) != 2 or int(sys.argv[1]) < 0:
     print('Usage: SortingAlgorithms.py <test list size>')
     exit()
 
-visibleSize = 30
+visibleSize = 20
 size = int(sys.argv[1])
 
-print('\n[Nearly Sorted]')
+print('\n### Nearly Sorted ###')
 nums = list(range(size))
 nums[int(size/2)-1], nums[int(size/2)] = nums[int(size/2)], nums[int(size/2)-1] if size > 1 else None
 print(nums) if size <= visibleSize else None
@@ -123,7 +123,7 @@ MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
 
-print('\n[Reverse Sorted]')
+print('\n### Reverse Sorted ###')
 nums = list(range(size, 0, -1))
 print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
@@ -132,7 +132,7 @@ MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
 
-print('\n[Random Order]')
+print('\n### Random Order ###')
 nums = list(range(size))
 random.shuffle(nums)
 print(nums) if size <= visibleSize else None
