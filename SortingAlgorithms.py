@@ -7,10 +7,11 @@ import sys
 import random
 from timeit import default_timer as timer
 
-def MeasureTime(nums, func):
-    time = timer()
-    sortedNums = func(nums)
-    return timer()-time, sortedNums
+def MeasureTimeAndPrint(name, nums, func):
+    t = timer()
+    s = func(nums)
+    print(name + ('%.4f' % (timer() - t)) + ' secs')
+    print(s) if size <= visibleSize else None
 
 def Ascending(x, y):
     return x - y
@@ -56,39 +57,19 @@ if size > 1:
     nums[int(size/2)-1], nums[int(size/2)] = nums[int(size/2)], nums[int(size/2)-1]
 
 print('' + str(nums)) if size <= visibleSize else None
-t, s = MeasureTime(nums, BubbleSort)
-print('Bubble Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, SelectionSort)
-print('Selection Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, InsertionSort)
-print('Insertion Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
+MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
+MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
+MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 
 print('\n[Reverse Sorted]')
 nums = list(range(size, 0, -1))
-print('' + str(nums)) if size <= visibleSize else None
-t, s = MeasureTime(nums, BubbleSort)
-print('Bubble Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, SelectionSort)
-print('Selection Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, InsertionSort)
-print('Insertion Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
+MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
+MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
+MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 
 print('\n[Random Order]')
 nums = list(range(size))
 random.shuffle(nums)
-print('' + str(nums)) if size <= visibleSize else None
-t, s = MeasureTime(nums, BubbleSort)
-print('Bubble Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, SelectionSort)
-print('Selection Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
-t, s = MeasureTime(nums, InsertionSort)
-print('Insertion Sort:  ' + ('%.4f' % t) + ' secs')
-print(s) if size <= visibleSize else None
+MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
+MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
+MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
