@@ -19,28 +19,41 @@ def Ascending(x, y):
 def Descending(x, y):
     return -Ascending(x, y)
 
-def _BubbleUp(nums, compare):
-    return nums if len(nums) <= 1 else [nums[1]] + _BubbleUp([nums[0]] + nums[2:], compare) if compare(nums[0], nums[1]) > 0 else [nums[0]] + _BubbleUp(nums[1:], compare)
-
 def BubbleSort(nums, compare = Ascending):
-    nums = _BubbleUp(nums, compare)
-    return nums if len(nums) <= 1 else BubbleSort(nums[:-1], compare) + [nums[-1]]
+    size = len(nums)
+
+    for i in range(size):
+        for j in range(size-1):
+            if compare(nums[j], nums[j+1]) > 0:
+                nums[j], nums[j+1] = nums[j+1], nums[j]
+
+        size -= 1
+
+    return nums
 
 def SelectionSort(nums, compare = Ascending):
-    sel = 0
+    size = len(nums)
 
-    for i in range(1, len(nums)):
-        if compare(nums[i], nums[sel]) > 0:
-            sel = i
+    for i in range(size-1):
+        for j in range(i+1, size):
+            if compare(nums[i], nums[j]) > 0:
+                nums[i], nums[j] = nums[j], nums[i]
 
-    return nums if len(nums) <= 1 else SelectionSort(nums[:sel] + nums[sel+1:], compare) + [nums[sel]]
-
-def _Insert(nums, compare):
-    sortedNums = InsertionSort(nums[1:], compare)
-    return [n for n in sortedNums if compare(nums[0], n) >= 0] + [nums[0]] + [n for n in sortedNums if compare(nums[0], n) < 0]
+    return nums
 
 def InsertionSort(nums, compare = Ascending):
-    return nums if len(nums) <= 1 else _Insert(nums, compare)
+    size = len(nums)
+
+    for i in range(1, size):
+        j = i - 1
+
+        while j >= 0:
+            if compare(nums[j], nums[j+1]) > 0:
+                nums[j], nums[j+1] = nums[j+1], nums[j]
+            else:
+                break
+
+    return nums
 
 
 if len(sys.argv) != 2:
@@ -56,13 +69,14 @@ nums = list(range(size))
 if size > 1:
     nums[int(size/2)-1], nums[int(size/2)] = nums[int(size/2)], nums[int(size/2)-1]
 
-print('' + str(nums)) if size <= visibleSize else None
+print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 
 print('\n[Reverse Sorted]')
 nums = list(range(size, 0, -1))
+print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
@@ -70,6 +84,7 @@ MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 print('\n[Random Order]')
 nums = list(range(size))
 random.shuffle(nums)
+print(nums) if size <= visibleSize else None
 MeasureTimeAndPrint('Bubble Sort:  ', nums, BubbleSort)
 MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
