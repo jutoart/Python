@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 # SortingAlgorithms.py
 # Implement several kinds of sorting algorithms
-# Including: Bubble sort, selection sort, insertion sort, quicksort and randomized quicksort
+# Including: Bubble sort, selection sort, insertion sort, quicksort, randomized quicksort and radix sort
 # Author: Art.Huang
 
 import sys
@@ -105,6 +105,31 @@ def RandomizedQuicksort(nums, compare = Ascending):
 
     return nums
 
+def RadixSort(nums, compare = Ascending):
+    size = len(nums)
+    shift = 0
+    radix = [n & 0xf for n in nums]
+
+    while sum(radix) > 0:
+        count = [0] * 16
+        s = [0] * size
+
+        for r in radix:
+            count[r] += 1
+
+        for i in range(1, 16):
+            count[i] += count[i-1]
+
+        for i in range(size-1, -1, -1):
+            s[count[radix[i]]-1] = nums[i]
+            count[radix[i]] -= 1
+
+        shift += 4
+        nums = s
+        radix = [(n >> shift) & 0xf for n in nums]
+
+    return nums
+
 
 if len(sys.argv) != 2 or int(sys.argv[1]) < 0:
     print('Usage: SortingAlgorithms.py <test list size>')
@@ -122,6 +147,7 @@ MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
+MeasureTimeAndPrint('Radix Sort:  ', nums, RadixSort)
 
 print('\n### Reverse Sorted ###')
 nums = list(range(size, 0, -1))
@@ -131,6 +157,7 @@ MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
+MeasureTimeAndPrint('Radix Sort:  ', nums, RadixSort)
 
 print('\n### Random Order ###')
 nums = list(range(size))
@@ -141,3 +168,4 @@ MeasureTimeAndPrint('Selection Sort:  ', nums, SelectionSort)
 MeasureTimeAndPrint('Insertion Sort:  ', nums, InsertionSort)
 MeasureTimeAndPrint('Quicksort:  ', nums, Quicksort)
 MeasureTimeAndPrint('Randomized Quicksort:  ', nums, RandomizedQuicksort)
+MeasureTimeAndPrint('Radix Sort:  ', nums, RadixSort)
