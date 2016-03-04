@@ -35,12 +35,12 @@ class RedBlackTree:
             if node.val == val:
                 return node
             elif node.val > val:
-                return self._Search(node.left)
+                return self._Search(node.left, val)
             else:
-                return self._Search(node.right)
+                return self._Search(node.right, val)
 
     def Search(self, val):
-        self._Search(self.root, val)
+        return self._Search(self.root, val)
 
     def _RotateLeft(self, parent, child):
         parent.right = child.left
@@ -99,39 +99,39 @@ class RedBlackTree:
                 else:
                     return self._InsertSearch(node.right, val)
 
-    def _CheckRedBlackForInsert(self, parent, child):
-        if child.color == Color.red:
-            if child is self.root:
-                child.color = Color.black
+    def _CheckRedBlackForInsert(self, node):
+        if node.color == Color.red:
+            if node is self.root:
+                node.color = Color.black
             else:
-                if parent.color == Color.red:
-                    if parent is self.root:
-                        parent.color = Color.black
+                if node.parent.color == Color.red:
+                    if node.parent is self.root:
+                        node.parent.color = Color.black
                     else:
                         # Uncle's color is red
-                        if child.Uncle() and child.Uncle().color == Color.red:
-                            parent.color = Color.black
-                            child.Uncle().color = Color.black
-                            parent.parent.color = Color.red
-                            self._CheckRedBlackForInsert(parent.parent.parent, parent.parent)
+                        if node.Uncle() and node.Uncle().color == Color.red:
+                            node.parent.color = Color.black
+                            node.Uncle().color = Color.black
+                            node.parent.parent.color = Color.red
+                            self._CheckRedBlackForInsert(node.parent.parent)
                         else:
                             # Uncle's color is black
-                            if parent.parent.left is parent:
-                                if child is parent.right:
-                                    self._RotateLeft(parent, child)
-                                    parent, child = child, parent
-
-                                parent.parent.color = Color.red
-                                parent.color = Color.black
-                                self._RotateRight(parent.parent, parent)
+                            if node.parent.parent.left is node.parent:
+                                if node is node.parent.right:
+                                    self._RotateLeft(node.parent, node)
+                                else:
+                                    node = node.parent
+                                node.parent.color = Color.red
+                                node.color = Color.black
+                                self._RotateRight(node.parent, node)
                             else:
-                                if child is parent.left:
-                                    self._RotateRight(parent, child)
-                                    parent, child = child, parent
-
-                                parent.parent.color = Color.red
-                                parent.color = Color.black
-                                self._RotateLeft(parent.parent, parent)
+                                if node is node.parent.left:
+                                    self._RotateRight(node.parent, node)
+                                else:
+                                    node = node.parent
+                                node.parent.color = Color.red
+                                node.color = Color.black
+                                self._RotateLeft(node.parent, node)
 
     def Insert(self, val):
         parent = self._InsertSearch(self.root, val)
@@ -143,44 +143,91 @@ class RedBlackTree:
             if parent.val >= val:
                 parent.left = TreeNode(val)
                 parent.left.parent = parent
-                self._CheckRedBlackForInsert(parent, parent.left)
+                self._CheckRedBlackForInsert(parent.left)
             else:
                 parent.right = TreeNode(val)
                 parent.right.parent = parent
-                self._CheckRedBlackForInsert(parent, parent.right)
+                self._CheckRedBlackForInsert(parent.right)
+
+    def _CheckRedBlackForDelete(self, node):
+        if node is self.root or node.color == Color.red:
+            node.color = Color.black
+        else:
+            # Case 1: Sibling's color is red
+            if node.Sibling().color == Color.red:
+                node.parent.color = Color.red
+                node.Sibling().color = Color.black
+
+                if node is node.parent.left:
+                    self._RotateLeft(node.parent, node.Sibling())
+                else:
+                    self._RotateRight(node.parent, node.Sibling())
+
+                self._CheckRedBlackForDelete(node)
+            else:
+                siblingLeftColor = Color.black if not node.Sibling().left else node.Sibling().left.color
+                siblingRightColor = Color.black if not node.Sibling().right else node.Sibling().right.color
+
+                # Case 2: Sibling's color is black and all its children's color are black
+                if siblingLeftColor == Color.black and siblingRightColor == Color.black:
+                    node.Sibling().color = Color.red
+                    self._CheckRedBlackForDelete(node.parent)
+                # Case 3: Sibling's color is black and its same-direction child's color is red
+                elif node is node.parent.left and siblingLeftColor == Color.red:
+                    node.Sibling().color = Color.red
+                    node.Sibling().left.color = Color.black
+                    self._RotateRight(node.Sibling(), node.Sibling().left)
+                    self._CheckRedBlackForDelete(node)
+                elif node is node.parent.right and siblingRightColor == Color.red:
+                    node.Sibling().color = Color.red
+                    node.Sibling().right.color = Color.black
+                    self._RotateLeft(node.Sibling(), node.Sibling().right)
+                    self._CheckRedBlackForDelete(node)
+                # Case 4: Sibling's color is black and its other-direction child's color is red
+                else:
+                    node.Sibling().color = node.parent.color
+                    node.parent.color = Color.black
+
+                    if node is node.parent.left:
+                        node.Sibling().right.color = Color.black
+                        self._RotateLeft(node.parent, node.Sibling())
+                    else:
+                        node.Sibling().left.color = Color.black
+                        self._RotateRight(node.parent, node.Sibling())
 
     def Delete(self, val):
-        node = Search(val)
+        node = self.Search(val)
 
         if node:
             if not node.left and not node.right:
+                self._CheckRedBlackForDelete(node)
+
                 if node.parent.left is node:
                     node.parent.left = None
                 else:
                     node.parent.right = None
-
-                if node.color == Color.black:
-                    self._CheckRedBlackForDelete(node.parent.parent, node.parent)
             elif not node.left:
                 if node.parent.left is node:
                     node.parent.left = node.right
                 else:
                     node.parent.right = node.right
 
+                if node.color == Color.red:
+                    node.right.color = Color.red
+
                 node.right.parent = node.parent
-                
-                if node.color == Color.black:
-                    self._CheckRedBlackForDelete(node.parent, node.right)
+                self._CheckRedBlackForDelete(node.right)
             elif not node.right:
                 if node.parent.left is node:
                     node.parent.left = node.left
                 else:
                     node.parent.right = node.left
 
+                if node.color == Color.red:
+                    node.left.color = Color.red
+
                 node.left.parent = node.parent
-                
-                if node.color == Color.black:
-                    self._CheckRedBlackForDelete(node.parent, node.left)
+                self._CheckRedBlackForDelete(node.left)
             else:
                 inOrderNext = node.right
 
@@ -189,16 +236,20 @@ class RedBlackTree:
 
                 node.val = inOrderNext.val
                 
-                if inOrderNext.parent.left is inOrderNext:
-                    inOrderNext.parent.left = inOrderNext.right
-                else:
-                    inOrderNext.parent.right = inOrderNext.right
-
-                if inOrderNext.color == Color.black:
-                    if inOrderNext.right:
-                        self._CheckRedBlackForDelete(inOrderNext.parent, inOrderNext.right)
+                if inOrderNext.right:
+                    if inOrderNext.parent.left is inOrderNext:
+                        inOrderNext.parent.left = inOrderNext.right
                     else:
-                        self._CheckRedBlackForDelete(inOrderNext.parent.parent, inOrderNext.parent)
+                        inOrderNext.parent.right = inOrderNext.right
+
+                    self._CheckRedBlackForDelete(inOrderNext.right)
+                else:
+                    self._CheckRedBlackForDelete(inOrderNext)
+
+                    if inOrderNext.parent.left is inOrderNext:
+                        inOrderNext.parent.left = None
+                    else:
+                        inOrderNext.parent.right = None
 
     def _Print(self, node):
         if node.left:
@@ -221,4 +272,14 @@ rbTree = RedBlackTree()
 for val in insertVal:
     rbTree.Insert(val)
 
+rbTree.Print()
+print()
+
+for i in range(10):
+    index = randint(0, len(insertVal)-1)
+    print("Delete: " + str(insertVal[index]))
+    rbTree.Delete(insertVal[index])
+    insertVal = insertVal[:index] + insertVal[index+1:]
+
+print()
 rbTree.Print()
