@@ -18,6 +18,12 @@ class TreeNode:
         self.right = None
         self.parent = None
 
+    def Sibling(self):
+        return None if not self.parent else self.parent.left if self.parent.right is self else self.parent.right
+
+    def Uncle(self):
+        return None if not self.parent or not self.parent.parent else self.parent.parent.left if self.parent.parent.right is self.parent else self.parent.parent.right
+
 class RedBlackTree:
     def __init__(self):
         self.root = None
@@ -94,22 +100,14 @@ class RedBlackTree:
                     if parent is self.root:
                         parent.color = Color.black
                     else:
-                        uncle = None
-
-                        if parent.parent.left is parent:
-                            uncle = parent.parent.right
-                        else:
-                            uncle = parent.parent.left
-
                         # Uncle's color is red
-                        if uncle and uncle.color == Color.red:
+                        if child.Uncle() and child.Uncle().color == Color.red:
                             parent.color = Color.black
-                            uncle.color = Color.black
+                            child.Uncle().color = Color.black
                             parent.parent.color = Color.red
                             self._CheckRedBlackForInsert(parent.parent.parent, parent.parent)
                         else:
                             # Uncle's color is black
-
                             if parent.parent.left is parent:
                                 if child is parent.right:
                                     self._RotateLeft(parent, child)
