@@ -121,6 +121,7 @@ class RedBlackTree:
                                     self._RotateLeft(node.parent, node)
                                 else:
                                     node = node.parent
+
                                 node.parent.color = Color.red
                                 node.color = Color.black
                                 self._RotateRight(node.parent, node)
@@ -129,6 +130,7 @@ class RedBlackTree:
                                     self._RotateRight(node.parent, node)
                                 else:
                                     node = node.parent
+
                                 node.parent.color = Color.red
                                 node.color = Color.black
                                 self._RotateLeft(node.parent, node)
@@ -242,6 +244,8 @@ class RedBlackTree:
                     else:
                         inOrderNext.parent.right = inOrderNext.right
 
+                    inOrderNext.right.parent = inOrderNext.parent
+
                     self._CheckRedBlackForDelete(inOrderNext.right)
                 else:
                     self._CheckRedBlackForDelete(inOrderNext)
@@ -263,7 +267,43 @@ class RedBlackTree:
         return
 
     def Print(self):
-        self._Print(self.root)
+        if self.root:
+            self._Print(self.root)
+
+    def _Verify(self, node):
+        if node.color == Color.red:
+            if node.left and node.left.color == Color.red:
+                print("Red node has red child!")
+                return -1
+
+            if node.right and node.right.color == Color.red:
+                print("Red node has red child!")
+                return -1
+
+        leftBlackHeight = 1 if not node.left else self._Verify(node.left)
+        rightBlackHeight = 1 if not node.right else self._Verify(node.right)
+
+        if leftBlackHeight < 0 or rightBlackHeight < 0:
+            return -1
+        else:
+            if leftBlackHeight != rightBlackHeight:
+                print("Black heights are not equal!")
+                return -1
+            else:
+                return leftBlackHeight if node.color == Color.red else leftBlackHeight + 1
+
+    def Verify(self):
+        print("Verify start...")
+
+        if self.root:
+            if self.root.color == Color.red:
+                print("Root's color is not black!")
+                return
+            else:
+                if self._Verify(self.root) < 0:
+                    return
+
+        print("Finished! All good!")
 
 
 insertVal = [randint(1, 100) for i in range(30)]
@@ -283,3 +323,5 @@ for i in range(10):
 
 print()
 rbTree.Print()
+print()
+rbTree.Verify()
