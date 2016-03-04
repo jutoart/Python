@@ -57,6 +57,10 @@ class RedBlackTree:
 
         child.parent = parent.parent
         parent.parent = child
+
+        if self.root is parent:
+            self.root = child
+
         return
     
     def _RotateRight(self, parent, child):
@@ -74,7 +78,11 @@ class RedBlackTree:
 
         child.parent = parent.parent
         parent.parent = child
-        return child
+
+        if self.root is parent:
+            self.root = child
+
+        return
 
     def _InsertSearch(self, node, val):
         if not node:
